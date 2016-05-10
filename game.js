@@ -3,22 +3,39 @@ window.onload = function () {
     var canvasNode = document.getElementById('game');
     var devPanelNode = document.getElementById('dev');
 
-    canvasNode.style.width = '900px';
-    canvasNode.style.height = '500px';
     canvasNode.style.border = '1px solid black';
     canvasNode.style.display = 'block';
     canvasNode.style.margin = 'auto';
     canvasNode.style.marginTop = '30px';
 
-    var ctx = canvasNode.getContext('2d');
+    var c = canvasNode.getContext('2d');
 
     var board = [false, false, false, false, false, false ,false , false , false];
 
-    var render = function (ctx, data) {
-
+    var render = function (c, data) {
+        drawGrid(c);
     };
 
-    var drawGrid = function (ctx) {
+    var drawBox = function (c, x, y, w, h) {
+        c.strokeStyle = 'black';
+        c.lineWidth = 2;
+        c.strokeRect(x, y, w, h);
+        console.log(x, y, w, h)
+    }
+
+    var drawRow = function (c, x, y, w, h, drawFunc, col, colSpace) {
+        var currentSpace;
+        for (var i = 0; i < col; i += 1) {
+            currentSpace = colSpace * i + 30;
+            drawFunc(c, currentSpace, y, w, h);
+        }
+    }
+
+    var drawGrid = function (c, x, y, w, h, drawCell, col, colSpace, drawRow, row, rowSpace) {
+        for (var i = 0; i < row; i += 1) {
+            var currentRowSpace = rowSpace * i;
+            drawRow(c, x, currentRowSpace, w, h, drawBox, col, colSpace);
+        }
     };
 
     var update = function (currentModel, updateDetails) {
@@ -42,6 +59,10 @@ window.onload = function () {
 
     // EVENT HANDLERS
 
+    var init = function () {
+           drawGrid(c, 20, 20, 150, 150, drawBox, 3, 150, drawRow, 3, 150)
+    };
+
     var mouseMove = function (evt, data) {
         var mousePos = getMousePos(canvasNode, evt);
         var message = "X: " + mousePos.x + ", " + "Y: " + mousePos.y;
@@ -49,5 +70,7 @@ window.onload = function () {
     }
 
     document.addEventListener('mousemove', mouseMove, false);
+
+    init();
 
 }
