@@ -6,6 +6,7 @@ canvasNode.style.display = 'block';
 canvasNode.style.margin = 'auto';
 canvasNode.style.marginTop = '30px';
 
+var canvasRect = canvasNode.getBoundingClientRect();
 var c = canvasNode.getContext('2d');
 
 var board = [false, false, false, false, false, false ,false , false , false];
@@ -15,9 +16,10 @@ var board = [false, false, false, false, false, false ,false , false , false];
 var boxPositions;
 
 var render = function (c, model) {
+	c.clearRect(0, 0, canvasRect.left, canvasRect.top);
     boxPositions = drawGrid(c, 20, 20, 150, 150, drawBox, 3, 150, drawRow, 3, 150);
     drawX(c, model)// draws X's where board index.state = 'X';
-    // drawO(c, model)// draws 0's where board index.state = 'O';
+    drawO(c, model);
 };
 
 // DRAW GRID
@@ -57,12 +59,7 @@ var drawGrid = function (c, x, y, w, h, drawCell, col, colSpace, drawRow, row, r
 // DRAW STATE
 
 var drawX = function (c , model) {
-    // Figure out which are X's
-        // easy if model[i] === x
-            // figure out how to position based on index
-                // easy cross reference it with boxPositions [it should have the same index]
     var x, y, w, h;
-
     for (var i = 0; i < model.length; i += 1) {
         if (model[i] === 'x') {
             // draw x at boxPositions[i];
@@ -70,13 +67,28 @@ var drawX = function (c , model) {
             y = boxPositions[i].y;
             w = boxPositions[i].w;
             h = boxPositions[i].h;
-
             c.strokeStyle = 'red';
             c.lineWidth = 2;
             c.strokeRect(x, y, w, h);
         }
     }
+};
 
+var drawO = function (c , model) {
+    var x, y, w, h;
+    for (var i = 0; i < model.length; i += 1) {
+        if (model[i] === 'o') {
+            // draw x at boxPositions[i];
+            x = boxPositions[i].x;
+            y = boxPositions[i].y;
+            w = boxPositions[i].w;
+            h = boxPositions[i].h;
+
+            c.strokeStyle = 'blue';
+            c.lineWidth = 2;
+            c.strokeRect(x, y, w, h);
+        }
+    }
 };
 
 var checkModel = function (currentModel) {
@@ -104,10 +116,9 @@ var update = function (currentModel, updateDetails) {
 
 // DEV
 var getMousePos = function (canvasNode, evt) {
-    var rect = canvasNode.getBoundingClientRect();
     var position = {};
-    position.x = evt.clientX - rect.left;
-    position.y = evt.clientY - rect.top;
+    position.x = evt.clientX - canvasRect.left;
+    position.y = evt.clientY - canvasRect.top;
     return position;
 }
 
