@@ -11,31 +11,45 @@ window.onload = function () {
     var c = canvasNode.getContext('2d');
 
     var board = [false, false, false, false, false, false ,false , false , false];
+    var box;
 
     var render = function (c, data) {
-        drawGrid(c);
+        console.log(drawGrid(c, 20, 20, 150, 150, drawBox, 3, 150, drawRow, 3, 150));
     };
 
     var drawBox = function (c, x, y, w, h) {
+        var box = {};
         c.strokeStyle = 'black';
         c.lineWidth = 2;
         c.strokeRect(x, y, w, h);
-        console.log(x, y, w, h)
+        box.x = x;
+        box.y = y;
+        box.w = w;
+        box.h = h;
+        return box;
     }
 
     var drawRow = function (c, x, y, w, h, drawFunc, col, colSpace) {
-        var currentSpace;
+        var currentSpace, rowArray = [];
         for (var i = 0; i < col; i += 1) {
             currentSpace = colSpace * i + 30;
-            drawFunc(c, currentSpace, y, w, h);
+            rowArray.push(drawFunc(c, currentSpace, y, w, h));
         }
+        // console.log(rowArray);
+        return rowArray;
     }
 
     var drawGrid = function (c, x, y, w, h, drawCell, col, colSpace, drawRow, row, rowSpace) {
+
+        var gridArray = [];
         for (var i = 0; i < row; i += 1) {
-            var currentRowSpace = rowSpace * i;
-            drawRow(c, x, currentRowSpace, w, h, drawBox, col, colSpace);
+            var currentRowSpace = rowSpace * i + 30;
+            var rowArray = drawRow(c, x, currentRowSpace, w, h, drawBox, col, colSpace);
+            gridArray = gridArray.concat(rowArray); 
         }
+        console.log(gridArray);
+
+
     };
 
     var update = function (currentModel, updateDetails) {
@@ -60,7 +74,7 @@ window.onload = function () {
     // EVENT HANDLERS
 
     var init = function () {
-           drawGrid(c, 20, 20, 150, 150, drawBox, 3, 150, drawRow, 3, 150)
+        render(c);
     };
 
     var mouseMove = function (evt, data) {
