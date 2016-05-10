@@ -14,7 +14,7 @@ window.onload = function () {
     var box;
 
     var render = function (c, data) {
-        console.log(drawGrid(c, 20, 20, 150, 150, drawBox, 3, 150, drawRow, 3, 150));
+        drawGrid(c, 20, 20, 150, 150, drawBox, 3, 150, drawRow, 3, 150);
     };
 
     var drawBox = function (c, x, y, w, h) {
@@ -40,16 +40,13 @@ window.onload = function () {
     }
 
     var drawGrid = function (c, x, y, w, h, drawCell, col, colSpace, drawRow, row, rowSpace) {
-
         var gridArray = [];
         for (var i = 0; i < row; i += 1) {
             var currentRowSpace = rowSpace * i + 30;
             var rowArray = drawRow(c, x, currentRowSpace, w, h, drawBox, col, colSpace);
-            gridArray = gridArray.concat(rowArray); 
+            gridArray = gridArray.concat(rowArray);
         }
-        console.log(gridArray);
-
-
+        return gridArray;
     };
 
     var update = function (currentModel, updateDetails) {
