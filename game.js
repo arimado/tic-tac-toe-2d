@@ -91,6 +91,19 @@ var drawO = function (c , model) {
     }
 };
 
+var getClicked = function (boxPositions, coors) {
+    var x, y, w, h;
+    for (var i = 0; i < boxPositions.length; i += 1 ) {
+        x = boxPositions[i].x;
+        y = boxPositions[i].y;
+        w = x + boxPositions[i].w;
+        h = y + boxPositions[i].h;
+        if((coors.x > x) && (coors.y > y) && (coors.x < w) && (coors.y < h)) {
+            return i;
+        }
+    }
+};
+
 var checkModel = function (currentModel) {
     var newModel;
 
@@ -113,7 +126,6 @@ var update = function (currentModel, updateDetails) {
     return newModel;
 };
 
-
 // DEV
 var getMousePos = function (canvasNode, evt) {
     var position = {};
@@ -132,11 +144,32 @@ var init = function () {
     render(c, board);
 };
 
+var clickHandler = function (evt) {
+    var mousePos = getMousePos(canvasNode, evt);
+    console.log(getClicked(boxPositions, mousePos));
+}
+
 var mouseMove = function (evt, data) {
+
+    // DEV PANEL ------------------------------------------
     var mousePos = getMousePos(canvasNode, evt);
     var message = "X: " + mousePos.x + ", " + "Y: " + mousePos.y;
     updateInnerHtml(devPanelNode, message);
+    // ----------------------------------------------------
+
+    // get coordinates of clicked
+    // get getClicked() returns index
+    // update model
+    // re-render
+
+
+
+
+
+
 }
+
+document.addEventListener('click',clickHandler, false );
 
 document.addEventListener('mousemove', mouseMove, false);
 
