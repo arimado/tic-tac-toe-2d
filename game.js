@@ -164,7 +164,6 @@ var updateInnerHtml = function (element, html) {
     element.innerHTML = html;
 }
 
-// EVENT HANDLERS
 
 var init = function () {
     render(c, board);
