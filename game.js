@@ -8,12 +8,9 @@ canvasNode.style.marginTop = '30px';
 
 var canvasRect = canvasNode.getBoundingClientRect();
 var c = canvasNode.getContext('2d');
-
 var board = [false, false, false, false, false, false ,false , false , false];
-
-
-
 var boxPositions;
+var currentTurn = 'x';
 
 var render = function (c, model) {
 	c.clearRect(0, 0, canvasRect.left, canvasRect.top);
@@ -104,25 +101,54 @@ var getClicked = function (boxPositions, coors) {
     }
 };
 
-var checkModel = function (currentModel) {
-    var newModel;
+var isWin = function (model) {
 
-    // 0,1,2
-    // 3,4,5
-    // 6,7,8
-    //
-    // across by 1
-    // down by 3
-    // right cross by 4
-    // left cross by 2
+    var topLeft = model[0];
+    var topMid = model[1];
+    var topRight = model[2];
+    var midLeft = model[3];
+    var midMid = model[4];
+    var midRight = model[5];
+    var botLeft = model[6];
+    var botMid = model[7];
+    var botRight = model[8];
 
-    return newModel
+    if ((topLeft !== false) && (topMid !== false) && (topRight !== false)) {
+        if((topLeft === topMid) && (topMid === topRight)) return true;
+    };
+    if ((midLeft !== false) && (midMid !== false) && (midRight !== false)) {
+        if((midLeft === midMid) && (midMid === midRight)) return true;
+    };
+    if ((botLeft !== false) && (botMid !== false) && (botRight !== false)) {
+        if((botLeft === botMid) && (botMid === botRight)) return true;
+    };
+    // // VERTICAL
+    if ((topLeft !== false) && (midLeft !== false) && (botLeft !== false)) {
+        if((topLeft === midLeft) && (midLeft === botLeft)) return true;
+    };
+    if ((topMid!== false) && (midMid!== false) && (botMid!== false)) {
+        if((topMid=== midMid) && (midMid=== botMid)) return true;
+    };
+    if ((topRight !== false) && (midRight !== false) && (botRight !== false)) {
+        if((topRight === midRight) && (midRight === botRight)) return true;
+    };
+    // // CROSS
+    if ((topLeft !== false) && (midMid !== false) && (botRight !== false)) {
+        if((topLeft === midMid) && (midMid === botRight)) return true;
+    };
+    if ((topRight !== false) && (midMid !== false) && (botLeft !== false)) {
+        if((topRight === midMid) && (midMid === botLeft)) return true;
+    };
+
+    return false;
 }
 
-
-var update = function (currentModel, updateDetails) {
-    var newModel;
-    // do stuff
+var updateModel = function (model, box) {
+    var newModel = model;
+    newModel[box] = currentTurn;
+    if(isWin(newModel)) {
+        console.log('Winner: ' +  currentTurn);
+    }
     return newModel;
 };
 
@@ -145,8 +171,15 @@ var init = function () {
 };
 
 var clickHandler = function (evt) {
+    if (currentTurn === 'x') {
+        currentTurn = 'o';
+    } else {
+        currentTurn = 'x';
+    }
     var mousePos = getMousePos(canvasNode, evt);
-    console.log(getClicked(boxPositions, mousePos));
+    var boxClicked = getClicked(boxPositions, mousePos);
+    var updatedModel = updateModel(board, boxClicked);
+    render(c, updatedModel);
 }
 
 var mouseMove = function (evt, data) {
@@ -159,13 +192,6 @@ var mouseMove = function (evt, data) {
 
     // get coordinates of clicked
     // get getClicked() returns index
-    // update model
-    // re-render
-
-
-
-
-
 
 }
 
